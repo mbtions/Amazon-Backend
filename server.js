@@ -3,7 +3,6 @@ const app = require("./app");
 
 const url =
   "mongodb+srv://$_USERNAME_$:$_PASSWORD_$@cluster0.iw1yf9v.mongodb.net/$_DB_NAME_$?retryWrites=true&w=majority&appName=Cluster0";
-//  mongodb+srv://root:abcd1234@cluster0.iw1yf9v.mongodb.net/$_DB_NAME_$?retryWrites=true&w=majority&appName=Cluster0
 
 const dbUser = "root";
 const dbPassword = "abcd1234";

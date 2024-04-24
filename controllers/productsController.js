@@ -15,7 +15,7 @@ const getAllProducts = async (req, res) => {
     // CREATING QUERY
     let query = productModel.find(q); // Query is Created such as SELECT * from ...
 
-    // similarly, as for sorting you can user -(minus) here to unselect or exclude
+    // similarly, as for sorting you can use -(minus) here to unselect or exclude
     // query = query.find(q);
     // filters included such as WHERE price = 1000
     // Sorting HARDCODED
