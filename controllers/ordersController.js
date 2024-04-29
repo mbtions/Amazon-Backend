@@ -104,10 +104,37 @@ const orderModel = require("../models/ordersModel");
 //   deleteProduct,
 // };
 
-const getAllOrders = (req, res) => {
+const getAllOrders = async (req, res) => {
   try {
+    const {
+      sort = "price",
+      page = 1,
+      pageSize = 2,
+      fields = "",
+      ...q
+    } = req.query;
+    const sortString = sort.split(",").join(" ");
+    const fieldsString = fields.split(",").join(" ");
+
+    let query = orderModel.find(q);
+    query = query.sort(sortString);
+
+    const SKIP = pageSize * (page - 1);
+
+    query = query.skip(SKIP).limit(pageSize);
+    query = query.select(fieldsString);
+
+    const orders = await query;
+    const totalResults = await orderModel.countDocuments();
     res.json({
       status: "success",
+      results: orders.length,
+      data: {
+        orders,
+      },
+      totalResults,
+      pageSize,
+      page,
       message: "Successfully fetched all orders",
     });
   } catch (err) {
@@ -116,14 +143,87 @@ const getAllOrders = (req, res) => {
   }
 };
 
-const addOrder = (req, res) => {};
-const updateOrder = (req, res) => {};
-const replaceOrder = (req, res) => {};
-const cancelOrder = (req, res) => {};
+const placeOrder = async (req, res) => {
+  try {
+    const { _id, ...data } = await orderModel.create(req.body);
+    res.json({
+      status: "success",
+      results: 1,
+      message: "order placed successfully!",
+      data: data,
+    });
+  } catch (err) {
+    res.status(500);
+    // console.log(err.message, "Oops! You missed out some details!");
+    res.json({
+      status: "fail",
+      message: "Oops! Something unexpected occur!",
+    });
+  }
+};
+const updateOrder = async (req, res) => {
+  try {
+    const reqId = req.params.id;
+    const data = req.body;
+    const result = await orderModel.findOneAndUpdate({ _id: reqId }, data);
+    res.json({
+      status: "success",
+      results: 1,
+      message: "order updated successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500);
+    // console.log(err.message, "You missed this!");
+    res.json({
+      status: "fail",
+      message: "Couldn't Update! You missed the timeline!",
+    });
+  }
+};
+const replaceOrder = async (req, res) => {
+  try {
+    const reqId = req.params.id;
+    const data = { ...req.body, _id: reqId };
+    const result = await orderModel.findOneAndReplace({ _id: reqId }, data);
+    res.json({
+      status: "success",
+      results: 0,
+      message: "Order replaced successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500);
+    // console.log(err.message, "You missed this!");
+    res.json({
+      status: "fail",
+      message: "Couldn't replace!",
+    });
+  }
+};
+const cancelOrder = async (req, res) => {
+  try {
+    const reqId = req.params.id;
+    const result = await orderModel.findOneAndDelete({ _id: reqId });
+    res.json({
+      status: "success",
+      results: 1,
+      message: "Order cancelled successfully!",
+      data: result,
+    });
+  } catch (err) {
+    res.status(500);
+    // console.log(err.message, "order Not exists!");
+    res.json({
+      status: "fail",
+      message: "Couldn't cancel order!",
+    });
+  }
+};
 
 module.exports = {
   getAllOrders,
-  addOrder,
+  placeOrder, // addOrder or postOrder
   updateOrder,
   replaceOrder,
   cancelOrder, // deleteOrder

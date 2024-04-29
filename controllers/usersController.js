@@ -7,7 +7,7 @@ const getAllUsers = async (req, res) => {
       status: "success",
       results: 0,
       data: {
-        products: data,
+        users: data,
       },
     });
   } catch (err) {

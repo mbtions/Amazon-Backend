@@ -51,7 +51,7 @@ username: root
 password: abcd1234
 
 Connection String:
-mongodb+srv://root:abcd1234@cluster0.iw1yf9v.mongodb.net/
+mongodb+srv[:]//root:abcd1234@cluster0[.]iw1yf9v[.]mongodb[.]net/
 
 when error => Go to Network Access > IP Access List > Add > Access From Anywhere
 

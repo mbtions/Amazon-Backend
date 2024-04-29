@@ -5,7 +5,7 @@ const orderRouter = express.Router();
 orderRouter
   .route("/")
   .get(ordersController.getAllOrders)
-  .post(ordersController.addOrder);
+  .post(ordersController.placeOrder);
 
 orderRouter
   .route("/:id")
